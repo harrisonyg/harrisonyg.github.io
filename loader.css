@@ -1,0 +1,41 @@
+
+#load
+{
+   text-align:center;
+   
+   background:white;
+   position:absolute;
+   z-index: 200;
+   width:100%;
+   height:100vh;
+   overflow:hidden;
+   display:flex;
+   justify-content: center;
+   align-items: center;
+   scroll-padding-top:inherit;
+}
+#load>img
+{
+   
+   overflow:hidden;
+   height:auto;
+   max-width:100%;
+}
+#load.hidden
+{
+  animation:hello 6s;
+  animation-fill-mode: forwards;
+}
+@keyframes hello 
+{
+    90%
+    {
+        opacity:1;
+    }
+    100%
+    {
+        opacity: 0;
+        visibility:hidden;
+    }
+}
+
