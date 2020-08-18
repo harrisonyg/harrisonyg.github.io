@@ -1,0 +1,496 @@
+@import url('https://fonts.googleapis.com/css2?family=Loved+by+the+King&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap');
+
+header{
+   padding:2em 0 0 0;
+
+   /* background-image: url(looping\ ball0091.gif);
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover; */
+   background:#000aff;
+
+   text-align: center;
+  position: relative;
+   width:100%;
+   top:0;
+   overflow:hidden;
+   color:rgb(255, 255, 255);
+}
+@media(max-width:500px)
+{
+  header
+  {
+    background-size:unset;
+  }
+}
+header:hover{
+  background-color: #ff5c5c;
+  color:black;
+  
+}
+
+.con
+{
+  width:100%;
+  height: 100%;
+  justify-items: center;
+  align-items:center;
+  position: relative;
+  
+}
+
+
+
+
+@keyframes hello{
+    to{
+        transform:rotate(0deg) ;
+    }
+   from{
+        transform:rotate(360deg);
+    }
+}
+
+  
+h1.m {
+  position: sticky;
+}
+   
+h1{
+   font-family: 'Amatic SC', cursive;
+   font-size: 2em;
+   letter-spacing: -.003em;
+   box-shadow: #ffd30a;
+}
+
+h1.ti {
+  letter-spacing: 0.3em;
+  animation:ti 5s ;
+}
+@keyframes ti
+{
+  from
+  {
+  letter-spacing:0.0103em;
+  }
+  to{
+    letter-spacing:0.3em;
+  }
+}
+ 
+h4 {
+  font-family: sans-serif;
+}
+
+body{
+     margin: 0em;
+    
+
+}
+
+
+.skillbarContainer 
+{ 
+  float: left;
+  width:50%; 
+  padding:2em;
+  margin:10px 10px;
+}
+@media(max-width:900px)
+{
+  .skillbarContainer
+  {
+    padding:1em;
+    width:80%;
+  }
+}
+h1.skillh1{
+
+  text-align:center;
+  color:#000aff;
+
+}
+.skillper
+{
+    margin-bottom: 1.66em;
+    box-shadow: inset 0 -0.5em 0 #FFD30A;
+}
+.skillperbar{
+  height:.50em;
+  width:100%;
+  background:rgb(194, 194, 194);
+}
+.skillbarper1
+{
+  height:.50em;
+  width:90%;
+  background:#00a3ff;
+  animation:move1 5s;
+}
+@keyframes move1{
+  from{width:0%;
+  }
+  to{width:90%};
+  }
+.skillbarper2
+{
+  height:.50em;
+  width:60%;
+  background:#6c4a8c;
+  animation: move2 5s;
+}
+@keyframes move2{
+  from{width:0%;
+  }
+  to{width:60%};
+  }
+.skillbarper3
+{
+  height:.50em;
+  width:70%;
+  background:#e65c00;
+  animation: move3 5s; 
+}
+@keyframes move3{
+  from{width:0%;
+  }
+  to{width:70%};
+  }
+.skillbarper4
+{
+  height:.50em;
+  width:90%;
+  background:rgb(0, 76, 163);
+  animation: move4 5s;
+}
+@keyframes move4{
+  from{width:0%;
+  }
+  to{width:90%};
+  }
+.skillbarper5
+{
+  height:.50em;
+  width:90%;
+  background:rgb(245, 38, 38);
+  animation: move5 5s;
+}
+@keyframes move5{
+  from{width:0%;
+  }
+  to{width:90%};
+  }
+.skillbarper6
+{
+  height:.50em;
+  width:70%;
+  background:rgb(0, 76, 163);
+  animation: move6 5S;
+}
+@keyframes move6{
+from{width:0%;
+}
+to{width:70%};
+}
+.skillbarper7
+{
+  height:.50em;
+  width:80%;
+  background:rgb(211, 0, 123);
+  animation: move7 5S;
+}
+@keyframes move7{
+from{width:0%;
+}
+to{width:80%};
+}
+.skillbarper8
+{
+  height:.50em;
+  width:60%;
+  background:rgb(255, 230, 0);
+  animation: move8 5S;
+}
+@keyframes move8{
+from{width:0%;
+}
+to{width:60%};
+}
+h1.quotetxt
+{
+  
+  font-size: 24px;
+  color:#000aff;
+
+
+}
+.lineyellow
+{
+  box-shadow: inset 0px -20px #ffd30a;
+  color: #000000a8;
+}
+
+.favquotes
+{
+  width:35%;
+  padding:3.4em 0 0 2em;
+  display:flex;
+  flex-direction:column;
+  
+}
+@media(max-width:900px)
+{
+  .favquotes
+  {
+    width:100%;
+    padding: 0 0 0 0;
+  }
+}
+
+.quotes
+{ 
+
+  font-size: calc(1rem + 1.2vw);
+  font-family:'Loved by the King', cursive;
+ 
+  
+}
+@media(max-width:900px)
+{
+  .quotes
+  {
+    width:100%;
+    text-align:center;
+    padding: 0;
+    font-size: calc(1rem + 3vw);
+  }
+}
+
+.por
+{
+  clear:both;
+}
+
+.container{
+    max-height: 500px;
+    max-width: 1060px;
+    /*display: flex;*/
+    margin:0 auto;
+}
+@media(max-width:1060px)
+{
+    .container{
+        display:block;
+    }
+}
+ .imgbx 
+{
+    float:right;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width:500px;
+    height:500px;
+
+}
+@media(max-width:1060px)
+{
+    .imgbx
+    {
+        height:100%;
+        justify-content:none;
+
+    }
+}
+
+footer{
+
+  position: relative;
+  padding:  2em;
+  background: #131313;
+  text-align: center;
+  clear: both;
+  height:100px;
+  color:white;
+  
+}
+.heading
+{
+  box-shadow: inset 0px -20px #ffd30a;
+  margin-right:auto;
+}
+.tt
+{
+   color:#000aff;
+   margin-bottom: 1.4rem;
+    font-family: itc-avant-garde-gothic-pro, sans-serif;
+    font-weight: 500;
+    line-height: 1.35;
+}
+#cir
+
+{
+height:50px;
+width:50px;
+position:absolute;
+background: #ffff8f;
+top: -84px;
+border-radius: 50%;
+animation: hw 6s cubic-bezier(0.21, 0.24, 1, 1) ;
+box-shadow: 0px 1px 20px 5px #FFC107;
+}
+@keyframes hw
+{
+  0%
+  {
+     transform: translate3d( 50px ,226px, 64px);
+  }
+  50%
+  {
+     transform: translate3d( 401px,16px,100px);
+  }
+ 
+  100%
+  {
+    transform: translate3d( 833px,45px,167px);
+  }
+}
+@media (max-width:500px)
+{
+  @keyframes hw
+  {
+    0%
+    {
+       transform: translate3d( 50px ,226px, 64px);
+    }
+    100%
+    {
+       transform: translate3d( 316px ,-94px, 50px);
+    }
+  }
+}
+
+#rec, #rec1, #rec2, #rec3, #rec4
+{
+  width: 24%;
+  height: 72%;
+  background: #00007a;
+  position:absolute;
+ }
+#rec
+{
+    transform: translate(303%, 90%) rotate(40deg);
+}
+#rec1
+{
+    transform: translate(138%,96%) rotate(40deg);
+}
+#rec2
+{
+    transform: translate(-8%,73%) rotate(40deg);
+}
+#rec3
+{
+    transform: translate(358%,54%) rotate(40deg);
+}
+#rec4
+{
+    transform: translate(57%,95%) rotate(40deg);
+}
+@media (max-width:500px)
+{
+    #rec, #rec1, #rec2, #rec3, #rec4
+{
+  width: 60%;
+  height: 60%;
+  background: #00007a;
+  position:absolute;
+ }
+#rec
+{
+    transform: translate(303%, 90%) rotate(40deg);
+}
+#rec1
+{
+    transform: translate(101%,107%) rotate(40deg);
+}
+#rec2
+{
+    transform: translate(-142%,74%) rotate(40deg);
+}
+#rec3
+{
+    transform: translate(358%,54%) rotate(40deg);
+}
+#rec4
+{
+    transform: translate(-20%,117%) rotate(40deg);
+}
+
+}
+.por
+{
+  display: flex;
+  justify-content: center;
+  align-items: center 
+}
+/* .porfont
+{
+  font: menu;
+  color: #ffffff;
+  font-size: calc( 3rem + 1.2vw);
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-55%, -129%);
+  border-bottom-style: dashed;
+} */
+/* .portback {
+  max-width: 720px;
+  width: 80%;
+  padding: 0em 2em 2em 2em;
+} */
+a{
+  text-decoration: none;
+  color:#000aff;
+}
+p.abmf
+{
+  font-family: monospace;
+}
+@media (max-width:900px)
+{
+  .abm
+  {
+    text-align:center;
+    font-size:larger;
+  }
+}
+span
+{
+  color:#000aff;
+}
+
+#note 
+{
+  max-width: 1000px;
+  font-family: monospace;
+  margin: 2em auto;
+  font-variant-caps: small-caps;
+  text-align: center;
+  text-transform: uppercase;
+  border: red 2px solid;
+}
+#pj
+{
+  clear:both;
+  text-align:center;
+}
+li{
+  font-size:1.5em;
+  font-family:monospace;
+}
+p{
+  margin:1em 0;
+}
