@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css?family=Sacramento');
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    background: linear-gradient(45deg, #ff1a1af0, #1a7cfff0);
+    color:white;
+    -webkit-text-emphasis: triangle;
+}
+p
+{
+   margin:1em 0;
+}
+
+containers
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height:33.8em;
+    transform:scale(0.7);
+}
+@media screen and (max-width:600px) 
+{
+    containers
+    {
+        transform:scale(0.4);
+    }
+    p#font
+    {
+        left: 69px;
+        transform: translate(-44px, -134px);
+    }
+    p#font2
+    {
+        left:69px;
+        transform: translate(10px, 206px);
+    }
+ 
+}
+.container
+{
+    
+    height:650px;
+    width:800px;
+    margin:2em auto;
+    padding:auto;
+    position: absolute;
+   
+}
+#screen
+{
+    background:#333;
+    width:400px;
+    height:300px;
+    position:absolute;
+    bottom:5.3em;
+    left:5em;
+    overflow:hidden;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+   
+}
+#screen img{
+    width: auto;
+    height: auto;
+    max-width: 400px;
+    max-height: 300px;
+
+}
+
+
+#cam{
+    position:relative;
+    overflow: hidden;
+    
+}
+#lbtn
+{
+    background:#ff000000;
+    position:absolute;
+    right:17.6em;
+    bottom:11em;
+    border:none;
+    transform:scale(1.25);
+    cursor: pointer;
+
+}
+
+#lbtn:focus {
+    outline: none;
+}
+#lbtn:active
+{
+   transform: scale(1);
+}
+#rbtn
+{
+    background:#ff000000;
+    position:absolute;
+    right:10.05em;
+    bottom:11.1em;
+    border:none;
+    transform:scale(1.2);
+    cursor: pointer;
+
+}
+
+#rbtn:focus 
+{
+    outline: none;
+}
+#rbtn:active
+{
+   transform: scale(1);
+}
+#font
+{
+    font-family: 'Sacramento', cursive;
+    position: absolute;
+    font-size: 12em;
+    right: 438px;
+    top: -323px;
+    transform: rotate(-27deg);
+    
+}
+#font2
+{
+    font-family: 'Sacramento', cursive;
+    position: absolute;
+    font-size: 12em;
+    left:631px;
+    top: 202px;
+    transform: rotate(-27deg);
+}
+span 
+{
+    color:#7394b0;
+}
+
+.yg
+{
+    font-family: monospace;
+    font-size:2em;
+    display:flex;
+    justify-content: center;
+    text-align:center;
+}
+svg{
+    animation:yg 1s infinite;
+    
+}
+@keyframes yg
+{
+    0%
+    {
+        transform:scale(1);
+    }
+    50%
+    {
+        transform:scale(1.5);
+    }
+    100%
+    {
+        transform:scale(1);
+    }
+}
+a
+{
+    text-decoration:none;
+    color:yellow;
+}
+
+
