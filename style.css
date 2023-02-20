@@ -1224,8 +1224,8 @@ body.light-mode .video-bg:before {
   background: black;
   position: relative;
   object-fit: cover;
-  width: 146px;
-  height: 146px;
+  max-width: 146px;
+  max-height: 146px;
   border-radius:50%;
   margin:auto;
   backdrop-filter: drop-shadow(2px 4px 6px black);
