@@ -898,7 +898,7 @@ body.light-mode .video-bg:before {
     padding: 0 30px;
     background: rgb(16 18 27 / 70%);
     white-space: nowrap;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     z-index: 1000;
     justify-content: space-between;
