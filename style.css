@@ -261,8 +261,8 @@ body.light-mode .video-bg:before {
 }
 
 .profile-img {
-  width: 32px;
-  height: 32px;
+  max-width: 32px;
+  max-height: 32px;
   border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
