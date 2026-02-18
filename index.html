@@ -96,7 +96,8 @@
     .share-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
     }
     .share-btn {
       display: inline-flex;
@@ -112,7 +113,8 @@
       cursor: pointer;
       transition: background 0.2s, color 0.2s, transform 0.15s;
     }
-    .share-btn:hover {
+    .share-btn:hover,
+    .share-btn:focus-visible {
       background: var(--surface-hover);
       color: var(--accent);
       transform: scale(1.05);
@@ -125,13 +127,46 @@
       height: 20px;
     }
     .share-btn.copied {
-      color: #4ade80;
+      color: var(--accent);
+    }
+    .qr-desktop {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .qr-desktop {
+        display: block;
+        position: fixed;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        z-index: 10;
+      }
+    }
+    .qr-desktop img {
+      display: block;
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .qr-desktop p {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="profile">
+      <img
+        class="avatar"
+        src="https://pps.services.adobe.com/api/profile/C64A5C2858C26B220A495CC2@AdobeID/image/d48d6ef0-3831-454b-b06f-a58d0131419e/276"
+        alt="Harrison Y G"
+      />
+      <h1 class="name">Harrison Y G</h1>
+      <p class="bio">Creative Developer</p>
       <div class="share-wrap">
         <button type="button" class="share-btn" id="shareBtn" aria-label="Share this page">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -141,14 +176,12 @@
           </svg>
         </button>
       </div>
-      <img
-        class="avatar"
-        src="https://pps.services.adobe.com/api/profile/C64A5C2858C26B220A495CC2@AdobeID/image/d48d6ef0-3831-454b-b06f-a58d0131419e/276"
-        alt="Harrison Y G"
-      />
-      <h1 class="name">Harrison Y G</h1>
-      <p class="bio">Creative Developer</p>
     </header>
+
+    <div class="qr-desktop" aria-hidden="true">
+      <img src="asset/f04c73eafa7d62ad439c931992fa6068.svg" alt="QR code to open this page on your phone" width="100" height="100">
+      <p>view on mobile</p>
+    </div>
 
     <nav class="links">
       <a class="link-card" href="https://www.behance.net/harrisonyg" target="_blank" rel="noopener noreferrer">Behance</a>
