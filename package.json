@@ -1,6 +1,11 @@
 {
   "name": "harrisonyg.github.io",
   "private": true,
+  "scripts": {
+    "dev": "npx --yes serve . -l 3000",
+    "spotify-proxy": "node server/spotify-proxy.mjs",
+    "spotify-proxy:env": "node --env-file=.env server/spotify-proxy.mjs"
+  },
   "engines": {
     "node": "24.x"
   }

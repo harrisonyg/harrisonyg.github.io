@@ -483,6 +483,8 @@
       i am harrison</h1>
     <h1 class="m">"Frontend Developer" "Designer" "Photographer"</h1>
 
+    <!-- Client secret: add data-token-proxy="http://127.0.0.1:3847/api/spotify/token" (local: npm run spotify-proxy) or your Netlify function URL. Omit attribute for PKCE-only (no secret). -->
+    <div id="spotify-widget" class="spotify-now" data-client-id="095c54dde1b84e2b853172ab18fbf0c3" aria-live="polite"></div>
 
   </header>
 
@@ -615,6 +617,7 @@
 
   </div>
 
+  <script type="module" src="spotify.js"></script>
 </body>
 
 </html>
