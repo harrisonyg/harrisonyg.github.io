@@ -261,6 +261,18 @@
     @keyframes spotify-pulse {
       50% { opacity: 0.72; }
     }
+    .spotify-hint {
+      max-width: 22rem;
+      margin: 0.6rem auto 0;
+      padding: 0 0.5rem;
+      font-size: 0.68rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .spotify-hint a {
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -275,6 +287,7 @@
       <p class="bio">Creative Developer</p>
       <!-- Spotify: In the Spotify Developer app, add every Redirect URI you use, exactly (e.g. both https://harrisonyg.github.io/ and https://harrisonyg.github.io/index.html if needed). Optional: data-spotify-redirect-uri to force one. data-token-proxy for local secret proxy only. -->
       <div id="spotify-widget" class="spotify-now" data-client-id="095c54dde1b84e2b853172ab18fbf0c3" aria-live="polite"></div>
+      <p class="spotify-hint">If login always fails: open your app in the <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer">Spotify Developer Dashboard</a> → <strong>User management</strong> and add your Spotify email (required while the app is in Development mode).</p>
       <div class="share-wrap">
         <button type="button" class="share-btn" id="shareBtn" aria-label="Share this page">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

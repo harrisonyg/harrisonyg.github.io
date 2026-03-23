@@ -24,8 +24,9 @@ const LS = {
   /** Spotify’s PKCE example uses localStorage; sessionStorage can be empty after some cross-site returns (Arc/Safari). */
   pkceVerifier: 'spotify_pkce_verifier',
   oauthState: 'spotify_oauth_state',
+  /** localStorage so errors survive full redirect + reload (sessionStorage can look “empty” in some browsers). */
+  authErr: 'spotify_auth_error',
 };
-const SS_AUTH_ERR = 'spotify_auth_error';
 
 function b64url(buf) {
   const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
@@ -65,12 +66,12 @@ function redirectUri() {
 }
 
 function setAuthError(msg) {
-  if (msg) sessionStorage.setItem(SS_AUTH_ERR, msg);
-  else sessionStorage.removeItem(SS_AUTH_ERR);
+  if (msg) localStorage.setItem(LS.authErr, msg);
+  else localStorage.removeItem(LS.authErr);
 }
 
 function readAuthError() {
-  return sessionStorage.getItem(SS_AUTH_ERR) || '';
+  return localStorage.getItem(LS.authErr) || '';
 }
 
 function getClientId() {
@@ -105,7 +106,7 @@ function setTokens(access, refresh, expiresInSec) {
 }
 
 function clearTokens() {
-  [LS.access, LS.refresh, LS.expires, LS.pkceVerifier, LS.oauthState].forEach((k) => localStorage.removeItem(k));
+  [LS.access, LS.refresh, LS.expires, LS.pkceVerifier, LS.oauthState, LS.authErr].forEach((k) => localStorage.removeItem(k));
 }
 
 async function refreshViaProxy(refreshTok) {
@@ -268,6 +269,7 @@ async function startAuth() {
     redirect_uri: redirectUri(),
     scope: SCOPES,
     state,
+    show_dialog: 'true',
   });
 
   if (!usesTokenProxy()) {
@@ -298,6 +300,8 @@ function parseOAuthReturn() {
   if (!code || !state) return Promise.resolve();
 
   const expected = localStorage.getItem(LS.oauthState);
+  const hasVerifier = Boolean(localStorage.getItem(LS.pkceVerifier));
+  console.info('[Spotify] OAuth return', { savedState: Boolean(expected), hasVerifier });
   localStorage.removeItem(LS.oauthState);
   if (expected && state !== expected) {
     console.error('Spotify OAuth state mismatch');
