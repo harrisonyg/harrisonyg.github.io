@@ -21,8 +21,10 @@ const LS = {
   access: 'spotify_access_token',
   refresh: 'spotify_refresh_token',
   expires: 'spotify_token_expires_at',
+  /** Spotify’s PKCE example uses localStorage; sessionStorage can be empty after some cross-site returns (Arc/Safari). */
+  pkceVerifier: 'spotify_pkce_verifier',
+  oauthState: 'spotify_oauth_state',
 };
-const SS_VERIFIER = 'spotify_pkce_verifier';
 const SS_AUTH_ERR = 'spotify_auth_error';
 
 function b64url(buf) {
@@ -47,11 +49,19 @@ function getWidget() {
   return document.getElementById('spotify-widget');
 }
 
-/** Must match a Redirect URI in the Spotify app exactly (trailing slash and /index.html matter). Optional override: data-spotify-redirect-uri on #spotify-widget. */
+/**
+ * Must match a Redirect URI in the Spotify app exactly.
+ * GitHub user pages at / often need a trailing slash in the dashboard (https://user.github.io/).
+ * Optional override: data-spotify-redirect-uri on #spotify-widget.
+ */
 function redirectUri() {
   const override = getWidget()?.dataset?.spotifyRedirectUri?.trim();
   if (override) return override;
-  return `${location.origin}${location.pathname}`;
+  const { origin, hostname, pathname } = location;
+  if (hostname.endsWith('.github.io') && pathname === '/') {
+    return `${origin}/`;
+  }
+  return `${origin}${pathname}`;
 }
 
 function setAuthError(msg) {
@@ -95,7 +105,7 @@ function setTokens(access, refresh, expiresInSec) {
 }
 
 function clearTokens() {
-  [LS.access, LS.refresh, LS.expires].forEach((k) => localStorage.removeItem(k));
+  [LS.access, LS.refresh, LS.expires, LS.pkceVerifier, LS.oauthState].forEach((k) => localStorage.removeItem(k));
 }
 
 async function refreshViaProxy(refreshTok) {
@@ -186,10 +196,10 @@ async function exchangeCodeViaProxy(code) {
 
 async function exchangeCodePkce(code) {
   const clientId = getClientId();
-  const verifier = sessionStorage.getItem(SS_VERIFIER);
+  const verifier = localStorage.getItem(LS.pkceVerifier);
   if (!clientId || !verifier) {
     setAuthError(
-      'Sign-in was interrupted (PKCE data missing). Use the same browser tab, or add this exact page URL as a Redirect URI in Spotify.',
+      'Sign-in was interrupted (PKCE data missing). Click Connect again. In Spotify Dashboard add this exact URL as a Redirect URI.',
     );
     return;
   }
@@ -202,13 +212,21 @@ async function exchangeCodePkce(code) {
     code_verifier: verifier,
   });
 
-  const res = await fetch(TOKEN, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
-  });
+  let res;
+  try {
+    res = await fetch(TOKEN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    });
+  } catch (e) {
+    console.error(e);
+    localStorage.removeItem(LS.pkceVerifier);
+    setAuthError('Could not reach Spotify (network or blocker). Try again or disable extensions for this site.');
+    return;
+  }
 
-  sessionStorage.removeItem(SS_VERIFIER);
+  localStorage.removeItem(LS.pkceVerifier);
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
@@ -242,7 +260,7 @@ async function startAuth() {
   }
 
   const state = randomVerifier();
-  sessionStorage.setItem('spotify_oauth_state', state);
+  localStorage.setItem(LS.oauthState, state);
 
   const params = new URLSearchParams({
     client_id: clientId,
@@ -255,7 +273,7 @@ async function startAuth() {
   if (!usesTokenProxy()) {
     const verifier = randomVerifier();
     const challenge = await sha256b64url(verifier);
-    sessionStorage.setItem(SS_VERIFIER, verifier);
+    localStorage.setItem(LS.pkceVerifier, verifier);
     params.set('code_challenge_method', 'S256');
     params.set('code_challenge', challenge);
   }
@@ -279,8 +297,8 @@ function parseOAuthReturn() {
 
   if (!code || !state) return Promise.resolve();
 
-  const expected = sessionStorage.getItem('spotify_oauth_state');
-  sessionStorage.removeItem('spotify_oauth_state');
+  const expected = localStorage.getItem(LS.oauthState);
+  localStorage.removeItem(LS.oauthState);
   if (expected && state !== expected) {
     console.error('Spotify OAuth state mismatch');
     setAuthError('Sign-in state mismatch — try Connect Spotify again.');
@@ -419,7 +437,12 @@ function renderConnectedButIdle() {
 }
 
 async function init() {
-  await parseOAuthReturn();
+  try {
+    await parseOAuthReturn();
+  } catch (e) {
+    console.error(e);
+    setAuthError(`Sign-in error: ${e?.message || 'unknown'}`);
+  }
   await fetchNowPlaying();
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(fetchNowPlaying, 15000);
