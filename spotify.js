@@ -35,6 +35,11 @@ function b64url(buf) {
 }
 
 async function sha256b64url(plain) {
+  if (!crypto.subtle) {
+    throw new Error(
+      'crypto.subtle is unavailable — open this page via localhost or HTTPS, not file://.',
+    );
+  }
   const data = new TextEncoder().encode(plain);
   const hash = await crypto.subtle.digest('SHA-256', data);
   return b64url(hash);
@@ -327,7 +332,11 @@ function renderIdle(message, opts = {}) {
   if (btn) {
     btn.addEventListener('click', () => {
       setAuthError('');
-      startAuth();
+      startAuth().catch((e) => {
+        console.error(e);
+        setAuthError(e.message || 'Could not start Spotify login.');
+        renderIdle(e.message || 'Could not start Spotify login.', { showConnect: true });
+      });
     });
   }
 }
