@@ -353,7 +353,7 @@ function renderPlaying(item, isPlaying) {
     <div class="spotify-now__inner spotify-now--playing ${isPlaying ? 'is-playing' : ''}">
       ${img ? `<img class="spotify-now__art" src="${img}" width="48" height="48" alt="" loading="lazy">` : '<div class="spotify-now__art spotify-now__art--placeholder"></div>'}
       <div class="spotify-now__text">
-        <span class="spotify-now__label">${isPlaying ? 'Now playing' : 'Paused'}</span>
+        <span class="spotify-now__label">${isPlaying ? 'Vibing now' : 'Vibe on ice'}</span>
         <a class="spotify-now__title" href="${href}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a>
         <span class="spotify-now__artist">${escapeHtml(artist)}</span>
       </div>
@@ -439,7 +439,7 @@ function renderConnectedButIdle() {
   w.innerHTML = `
     <div class="spotify-now__inner spotify-now--idle">
       <span class="spotify-now__label">Spotify</span>
-      <span class="spotify-now__meta">Nothing playing right now</span>
+      <span class="spotify-now__meta">No vibe rn — hit play somewhere</span>
       <button type="button" class="spotify-now__btn spotify-now__btn--ghost" id="spotify-disconnect">Disconnect</button>
     </div>`;
   document.getElementById('spotify-disconnect')?.addEventListener('click', () => {

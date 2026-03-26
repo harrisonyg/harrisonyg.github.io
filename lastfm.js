@@ -43,7 +43,7 @@ function renderPlaying(track, isNowPlaying) {
     <div class="spotify-now__inner spotify-now--playing ${isNowPlaying ? 'is-playing' : ''}">
       ${img ? `<img class="spotify-now__art" src="${img}" width="48" height="48" alt="" loading="lazy">` : '<div class="spotify-now__art spotify-now__art--placeholder"></div>'}
       <div class="spotify-now__text">
-        <span class="spotify-now__label">${isNowPlaying ? 'Now playing' : 'Last played'}</span>
+        <span class="spotify-now__label">${isNowPlaying ? 'Vibing now' : 'Last vibe'}</span>
         <a class="spotify-now__title" href="${href}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a>
         <span class="spotify-now__artist">${escapeHtml(artist)}</span>
       </div>
