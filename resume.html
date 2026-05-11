@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resume — Harrison Y G · Software Engineer, Frontend Developer, UI/UX Designer">
+  <title>Harrison Y G · Resume</title>
+  <link rel="icon" href="https://pps.services.adobe.com/api/profile/C64A5C2858C26B220A495CC2@AdobeID/image/d48d6ef0-3831-454b-b06f-a58d0131419e/276">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg: #fbfbfa;
+      --paper: #ffffff;
+      --text: #37352f;
+      --text-muted: #787774;
+      --text-faint: #9b9a97;
+      --border: rgba(55, 53, 47, 0.09);
+      /* Link blue aligned with dark UI (e.g. portfolio header links) */
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --callout-bg: rgba(241, 241, 239, 0.8);
+      --radius: 3px;
+      --maxw: 720px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #191919;
+        --paper: #1f1f1f;
+        --text: #e6e6e4;
+        --text-muted: #9b9b9b;
+        --text-faint: #7f7f7f;
+        --border: rgba(255, 255, 255, 0.09);
+        --callout-bg: rgba(255, 255, 255, 0.04);
+      }
+    }
+    body {
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 2.5rem 1.25rem 4rem;
+      font-feature-settings: "liga" 1, "kern" 1;
+    }
+    .doc {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2.25rem 2rem 2.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    /* Full A4-readable width for html2pdf so PDF pages are not letterboxed with white gutters */
+    body.is-pdf-export {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      background: var(--paper) !important;
+    }
+    .doc.is-pdf-export {
+      max-width: none !important;
+      width: 794px;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 0;
+      box-shadow: none;
+      border-left: none;
+      border-right: none;
+    }
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem 0.75rem 2.5rem;
+      }
+      .doc {
+        padding: 1.5rem 1.15rem 2rem;
+      }
+    }
+    .top-nav {
+      max-width: var(--maxw);
+      margin: 0 auto 1rem;
+      font-size: 13px;
+    }
+    .top-nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .top-nav a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+    .btn-pdf {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0.42rem 0.9rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1.3;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-pdf:hover {
+      background: var(--callout-bg);
+      border-color: rgba(55, 53, 47, 0.16);
+    }
+    @media (prefers-color-scheme: dark) {
+      .btn-pdf:hover {
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+    }
+    .btn-pdf:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+    .tagline {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+    .contact-row a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .contact-row a:hover {
+      text-decoration: underline;
+      color: var(--accent-hover);
+    }
+    .links-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1.25rem;
+      font-size: 14px;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .links-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .links-line a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+    .doc a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .doc a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-top: 1.75rem;
+      margin-bottom: 0.65rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h2:first-of-type {
+      margin-top: 1.5rem;
+    }
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 1.15rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+    p {
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .callout {
+      background: var(--callout-bg);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0 1rem;
+      border-left: 3px solid var(--border);
+    }
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+    ul {
+      margin: 0.35rem 0 0.85rem 1.25rem;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 0.35rem;
+      padding-left: 0.15rem;
+    }
+    li::marker {
+      color: var(--text-faint);
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .meta strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .job-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 1.25rem;
+    }
+    .job-title:first-child {
+      margin-top: 0.35rem;
+    }
+    .project-name {
+      font-weight: 600;
+      margin-top: 1.1rem;
+    }
+    .project-name:first-of-type {
+      margin-top: 0.5rem;
+    }
+    .tech {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .subhead {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      margin-bottom: 0.35rem;
+    }
+    .skill-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    @media (min-width: 560px) {
+      .skill-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .skill-block ul {
+      margin-top: 0.25rem;
+    }
+    hr.soft {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .top-nav {
+        display: none;
+      }
+      .doc {
+        border: none;
+        box-shadow: none;
+        padding: 0.5rem 0;
+      }
+      a {
+        color: var(--text);
+        text-decoration: none;
+      }
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="Resume page">
+    <div class="top-nav__inner">
+      <a href="/">← Home</a>
+      <button type="button" class="btn-pdf" id="resumePdfBtn" aria-label="Download resume as a PDF file">
+        Download PDF
+      </button>
+    </div>
+  </nav>
+
+  <article class="doc">
+    <header>
+      <h1>Harrison Y G</h1>
+      <p class="tagline">Software Engineer · Frontend Developer · UI/UX Designer</p>
+      <div class="contact-row">
+        <span>📍 Karnataka, India</span>
+      </div>
+      <div class="contact-row">
+        <span>📧 <a href="mailto:harrisonyg08@gmail.com">harrisonyg08@gmail.com</a></span>
+        <span>📞 <a href="tel:+917339470373">+91 73394 70373</a></span>
+      </div>
+      <div class="links-line">
+        <span>🔗 <a href="https://harrisonyg.github.io">Portfolio</a></span>
+        <span>🔗 <a href="https://github.com/harrisonyg">GitHub</a></span>
+        <span>🔗 <a href="https://www.linkedin.com/in/harrisonyg">LinkedIn</a></span>
+      </div>
+    </header>
+
+    <section aria-labelledby="summary-heading">
+      <h2 id="summary-heading">Professional summary</h2>
+      <div class="callout">
+        <p>Passionate Software Engineer and Designer with hands-on experience building scalable web applications using Vue.js, JavaScript, TypeScript, and modern frontend technologies. Strong interest in UI/UX, interaction design, and product-focused development. Strong understanding of UI/UX, component architecture, state management, and API integrations. Shipped production work at PropVR spanning the company website (design and development), immersive Electron and spatial web experiences—including local media servers and spatial viewing platforms—and personal products including FrameFlow (browser design editor), KickStart (productivity workspace), and lightweight media utilities.</p>
+        <p>Passionate about building clean, user-focused products with strong attention to performance, scalability, and maintainable code. Comfortable collaborating with cross-functional teams and continuously learning new technologies across frontend and backend ecosystems.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="skills-heading">
+      <h2 id="skills-heading">Technical skills</h2>
+      <div class="skill-grid">
+        <div class="skill-block">
+          <p class="subhead">Languages</p>
+          <ul>
+            <li>JavaScript (ES6+)</li>
+            <li>TypeScript</li>
+            <li>HTML5</li>
+            <li>CSS3</li>
+            <li>Python</li>
+            <li>Dart</li>
+          </ul>
+        </div>
+        <div class="skill-block">
+          <p class="subhead">Design &amp; frontend</p>
+          <ul>
+            <li>Vue.js</li>
+            <li>React.js</li>
+            <li>Next.js</li>
+            <li>React Native (basic)</li>
+            <li>Tailwind CSS</li>
+            <li>Responsive design</li>
+            <li>UI/UX design</li>
+            <li>Interaction design</li>
+            <li>Design systems</li>
+            <li>Figma</li>
+            <li>Adobe Photoshop, Illustrator, After Effects</li>
+            <li>DaVinci Resolve</li>
+          </ul>
+        </div>
+        <div class="skill-block">
+          <p class="subhead">Backend</p>
+          <ul>
+            <li>Node.js</li>
+            <li>Express.js</li>
+          </ul>
+          <p class="subhead">Databases</p>
+          <ul>
+            <li>Firebase</li>
+            <li>AWS (basic)</li>
+          </ul>
+        </div>
+        <div class="skill-block">
+          <p class="subhead">DevOps &amp; tools</p>
+          <ul>
+            <li>Git &amp; GitHub</li>
+            <li>GitHub Actions</li>
+            <li>Postman</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="experience-heading">
+      <h2 id="experience-heading">Professional experience</h2>
+
+      <div>
+        <p class="job-title">Software Developer Intern</p>
+        <p class="meta"><strong>Aahaa Technologies</strong> · Chennai, Tamil Nadu, India · Feb 2022 – Aug 2022 · <a href="https://www.behance.net/gallery/243639433/DigiSell">DigiSell (Behance)</a></p>
+        <p class="meta">Aahaa Technologies is a B2B eCommerce SaaS solution provider focused on scalable supply chain and digital commerce solutions.</p>
+        <p class="subhead">Key contributions</p>
+        <ul>
+          <li>Worked on frontend and application development tasks for B2B SaaS products.</li>
+          <li>Contributed to API integration workflows and application feature development.</li>
+          <li>Gained hands-on experience with React Native and modern JavaScript development.</li>
+          <li>Collaborated with development teams to improve application functionality and user experience.</li>
+          <li>Created UI/UX and product interface designs in Figma for internal product workflows and application screens.</li>
+          <li>Contributed to improving user experience through interface thinking, layout design, and interaction-focused design decisions.</li>
+          <li>Worked in an agile development environment and participated in product-focused engineering workflows.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="job-title">Full Stack Developer</p>
+        <p class="meta"><strong>PropVR</strong> · Bengaluru, Karnataka, India · Nov 2023 – Present</p>
+        <p>Worked on software infrastructure and immersive digital product experiences for PropVR platforms and media systems.</p>
+        <p class="subhead">Key contributions</p>
+        <ul>
+          <li>Developed and maintained full-stack applications and infrastructure-focused workflows for immersive digital experiences.</li>
+          <li>Built scalable frontend systems, backend services, and media-driven application workflows.</li>
+          <li>Worked with Electron, Node.js, JavaScript, HTTP/HTTPS services, and local media infrastructure.</li>
+          <li>Contributed to immersive showroom applications with multi-device interactions.</li>
+          <li>Worked on PropVR Spatial Lite (formerly WebLite), a browser-based immersive spatial experience platform for showcasing interactive real estate and virtual environments.</li>
+          <li>Helped build and improve spatial viewing experiences, UI workflows, media interactions, and frontend infrastructure for immersive product presentations.</li>
+          <li>Designed and developed UI/UX workflows, product interfaces, and interaction-focused experiences.</li>
+          <li>Collaborated across engineering, design, and product teams to improve application usability and performance.</li>
+          <li>Focused on scalable architecture, responsive interfaces, and maintainable code practices.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="projects-heading">
+      <h2 id="projects-heading">Personal projects</h2>
+
+      <div>
+        <p class="project-name">FrameFlow</p>
+        <p class="tech">🔗 <a href="https://harrisonyg.github.io/frameflow">Live demo</a> · Tech stack: React, TypeScript, JavaScript</p>
+        <p>Open-source browser-based design editor focused on layout design, vector paths, image editing, and creative workflows.</p>
+        <ul>
+          <li>Built artboard and layer-based editing workflows inspired by professional design tools.</li>
+          <li>Implemented image treatment features, vector editing concepts, and export functionality.</li>
+          <li>Focused on responsive browser performance and smooth editing experiences.</li>
+          <li>Explored scalable frontend architecture using React and TypeScript.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="project-name">Album Cover Downloader</p>
+        <p class="tech">🔗 <a href="https://music-cover-downloader.vercel.app/">Live demo</a> · Tech stack: JavaScript</p>
+        <p>Weekend build project that allows users to download album cover images from Spotify and Apple Music playlists.</p>
+        <ul>
+          <li>Built functionality to collect and export up to 100 album covers in ZIP format.</li>
+          <li>Designed a simple workflow for quickly gathering cover art collections.</li>
+          <li>Focused on API integration and file export handling.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="project-name">Pixel Ruler</p>
+        <p class="tech">🔗 <a href="https://harrisonyg.github.io/pixelRuler/">Live demo</a> · Tech stack: JavaScript</p>
+        <p>Screen measurement tool designed to support immersive display experiences.</p>
+        <ul>
+          <li>Built pixel-accurate screen measurement utilities.</li>
+          <li>Focused on precision UI interactions and lightweight performance.</li>
+          <li>Developed as a practical utility tool during a weekend build.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="project-name">Video to WebP Sequence Exporter</p>
+        <p class="tech">🔗 <a href="https://harrisonyg.github.io/video2webp/">Live demo</a> · Tech stack: JavaScript</p>
+        <p>Browser-based utility for converting videos into WebP image sequences.</p>
+        <ul>
+          <li>Implemented video frame extraction and WebP export workflows.</li>
+          <li>Focused on performance optimization and efficient media processing.</li>
+          <li>Designed lightweight browser-based conversion experiences.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="project-name">KickStart</p>
+        <p class="tech">Tech stack: TypeScript, React, Vite, Electron (optional desktop), Zustand, Tailwind CSS</p>
+        <p>Personal productivity workspace in the browser (and as an Electron app): dashboard, tasks, calendar, reminders, vault notes, creative boards, focus timer, routines, and Google sync — tuned for clarity and low-friction daily use (including ADHD-oriented touches like calm mode and readable layouts).</p>
+        <ul>
+          <li>Built multi-view calendar (month / week / day / schedule) with events, dated reminders, due tasks, and vault date hints; integrated Google Calendar &amp; Tasks flows where configured.</li>
+          <li>Implemented rich notes (TipTap / Markdown), kanban-style tasks, Miro-style brain-dump canvases, and vault ↔ tasks / calendar / reminders linking.</li>
+          <li>Added focus sessions (timer, notifications, floating mini-timer) and dashboard widgets (weather, quotes, etc.) for a single “today” surface.</li>
+          <li>Designed lightweight, glass-style UI with persisted local state, optional sync, and optional desktop affordances (quick notes, tray-style helpers via Electron).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="pro-projects-heading">
+      <h2 id="pro-projects-heading">Professional projects</h2>
+
+      <div>
+        <p class="project-name">PropVR Immersive</p>
+        <p class="tech">Electron, Node.js, JavaScript, HTTP/HTTPS</p>
+        <p>Desktop Electron application built as a local immersive media server for showroom and fullscreen playback experiences.</p>
+        <ul>
+          <li>Developed a fullscreen desktop application capable of serving immersive media experiences locally.</li>
+          <li>Built media management workflows that scan disk-based category folders and dynamically expose videos, images, and 3D glTF / GLB assets.</li>
+          <li>Implemented a built-in HTTP server with optional HTTPS support for secure network-based access and tablet remote control.</li>
+          <li>Supported separate web-based interfaces for media player, remote control, and admin workflows.</li>
+          <li>Focused on performance, media handling, scalable architecture, and immersive display experiences.</li>
+          <li>Worked with local file systems, media streaming workflows, and multi-device interaction concepts.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="project-name">PropVR Website</p>
+        <p class="tech">🔗 <a href="https://propvr.ai">propvr.ai</a> · Design engineer · Design &amp; development · Nuxt 4, Vue 3, TypeScript, Vite</p>
+        <p>Company marketing site for PropVR—owning visual design direction alongside frontend implementation for brand storytelling, product positioning, and lead-facing experiences.</p>
+        <ul>
+          <li>Designed and developed page layouts, typography, and interaction patterns aligned with PropVR’s brand and immersive product narrative.</li>
+          <li>Built responsive, performance-conscious frontend experiences across breakpoints and devices.</li>
+          <li>Translated wireframes and visual concepts into production-ready UI, iterating with stakeholders on layout, motion, and content hierarchy.</li>
+          <li>Collaborated across design and engineering to ship cohesive landing flows, case-style sections, and calls-to-action.</li>
+        </ul>
+        <p class="subhead">Core framework</p>
+        <ul>
+          <li>Vue 3 (vue, @vue/compiler-sfc, @vue/server-renderer).</li>
+          <li>Nuxt 4 (nuxt)—app shell, routing, SSR/SSG, Nitro server output (serve via node .output/server/index.mjs).</li>
+          <li>Vue Router (vue-router); Pinia (pinia) for state; TypeScript (typescript, vue-tsc).</li>
+        </ul>
+        <p class="subhead">Build &amp; tooling</p>
+        <ul>
+          <li>Vite (vite, @vitejs/plugin-vue, @vitejs/plugin-vue-jsx); Rollup ecosystem (rollup + plugins).</li>
+          <li>ESLint (eslint, eslint-plugin-vue, vite-plugin-eslint).</li>
+          <li>PostCSS + Autoprefixer; UnoCSS (unocss, @unocss/preset-mini); Tailwind CSS (tailwindcss, tailwind-scrollbar); Sass (sass).</li>
+          <li>unplugin-auto-import / unplugin-vue-components.</li>
+        </ul>
+        <p class="subhead">Styling &amp; UI</p>
+        <ul>
+          <li>Tailwind-style utilities and shared src/style.css per Nuxt config.</li>
+          <li>Headless UI (@headlessui/vue); Heroicons (@heroicons/vue).</li>
+          <li>Carousels: Swiper (swiper), Flickity (flickity), vue3-carousel.</li>
+          <li>Google Fonts in nuxt.config: Rethink Sans, Roboto.</li>
+        </ul>
+        <p class="subhead">Motion &amp; 3D</p>
+        <ul>
+          <li>GSAP (gsap)—scroll timelines, reveals, counters.</li>
+          <li>Lenis (lenis)—smooth scrolling where used.</li>
+          <li>Three.js (three)—3D (e.g. Spatial OS cube experiences).</li>
+        </ul>
+        <p class="subhead">Data &amp; APIs</p>
+        <ul>
+          <li>Axios (axios, @nuxtjs/axios); xml2js for XML parsing where needed.</li>
+        </ul>
+        <p class="subhead">SEO, security &amp; schema</p>
+        <ul>
+          <li>@nuxtjs/sitemap, @nuxtjs/robots; nuxt-schema-org for structured data.</li>
+          <li>nuxt-security—CSP / security headers (nuxt.config.ts); nuxt-protected-mailto.</li>
+        </ul>
+        <p class="subhead">Runtime &amp; deployment</p>
+        <ul>
+          <li>Express (express) for legacy/custom server paths in scripts.</li>
+          <li>compression, serve-static; dotenv / dotenv-cli.</li>
+        </ul>
+        <p class="subhead">Analytics &amp; marketing</p>
+        <ul>
+          <li>Microsoft Clarity and Zoho PageSense scripts configured in app head (nuxt.config).</li>
+        </ul>
+        <p class="subhead">Legacy alternate build</p>
+        <ul>
+          <li>Separate Vite SSR pipelines (e.g. build:propvr, build:propxx)—older client/server bundles alongside the main Nuxt production path.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="education-heading">
+      <h2 id="education-heading">Education</h2>
+      <p><strong>Loyola College</strong></p>
+      <p class="meta">Master of Computer Science (M.Sc), Computer Science · 2020 – 2022</p>
+    </section>
+
+    <section aria-labelledby="approach-heading">
+      <h2 id="approach-heading">Development approach</h2>
+      <ul>
+        <li>Rapid prototyping and iterative product development</li>
+        <li>Strong focus on design-engineering workflows</li>
+        <li>Comfortable using AI-assisted development tools to accelerate experimentation and implementation</li>
+        <li>Product-focused thinking with emphasis on usability and interaction design</li>
+        <li>Fast execution from concept to functional prototype</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="strengths-heading">
+      <h2 id="strengths-heading">Strengths</h2>
+      <ul>
+        <li>Strong problem-solving mindset</li>
+        <li>Fast learner with curiosity for modern technologies</li>
+        <li>Passionate about UI/UX and clean product experiences</li>
+        <li>Good understanding of scalable frontend architecture</li>
+        <li>Adaptable and collaborative team player</li>
+        <li>Focused on continuous improvement and learning</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="additional-heading">
+      <h2 id="additional-heading">Additional information</h2>
+      <ul>
+        <li>Care about mixing engineering, design, motion, and technology—interactive interfaces and storytelling through UI and media.</li>
+        <li>Build side projects, prototypes, and small utilities; curious about frontend architecture, media workflows, and design–engineering collaboration from UX through full-stack delivery.</li>
+        <li>Like fast-moving product teams and startup-style iteration; keep learning across tools, disciplines, and emerging tech.</li>
+        <li>Also interested in hardware, filmmaking and motion graphics, productivity systems, and how people use (and feel) digital products.</li>
+      </ul>
+    </section>
+  </article>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      function whenFontsReady(fn) {
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(fn).catch(function () { fn(); });
+        } else {
+          setTimeout(fn, 600);
+        }
+      }
+
+      function downloadPdf() {
+        var el = document.querySelector('.doc');
+        if (!el || typeof html2pdf === 'undefined') {
+          return;
+        }
+
+        function cleanupPdfExport() {
+          document.body.classList.remove('is-pdf-export');
+          el.classList.remove('is-pdf-export');
+        }
+
+        document.body.classList.add('is-pdf-export');
+        el.classList.add('is-pdf-export');
+        void el.offsetWidth;
+
+        var paperBg =
+          getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() ||
+          '#ffffff';
+        var opt = {
+          margin: 0,
+          filename: 'Harrison-Y-G-Resume.pdf',
+          image: { type: 'jpeg', quality: 0.92 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            letterRendering: true,
+            backgroundColor: paperBg
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'], avoid: ['.project-name', 'h2', '.job-title'] }
+        };
+
+        var done = html2pdf().set(opt).from(el).save();
+        if (done && typeof done.finally === 'function') {
+          done.finally(cleanupPdfExport);
+        } else if (done && typeof done.then === 'function') {
+          done.then(cleanupPdfExport, cleanupPdfExport);
+        } else {
+          setTimeout(cleanupPdfExport, 6000);
+        }
+        return done;
+      }
+
+      function runDownload() {
+        var btn = document.getElementById('resumePdfBtn');
+        whenFontsReady(function () {
+          if (btn) btn.disabled = true;
+          try {
+            var p = downloadPdf();
+            if (p && typeof p.then === 'function') {
+              p.then(function () {}).catch(function () {}).finally(function () {
+                if (btn) btn.disabled = false;
+              });
+            } else if (btn) {
+              setTimeout(function () { btn.disabled = false; }, 4000);
+            }
+          } catch (err) {
+            if (btn) btn.disabled = false;
+          }
+        });
+      }
+
+      var btn = document.getElementById('resumePdfBtn');
+      if (btn) btn.addEventListener('click', runDownload);
+
+      try {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('pdf') === '1') {
+          window.addEventListener('load', function () {
+            setTimeout(runDownload, 300);
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

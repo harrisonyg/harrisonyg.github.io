@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Vault — your system</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0b10;
+      --sidebar: #0e1018;
+      --surface: rgba(255, 255, 255, 0.05);
+      --surface2: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.09);
+      --text: #f2f3f7;
+      --muted: #8b92a8;
+      --accent: #7c5cff;
+      --accent-dim: rgba(124, 92, 255, 0.28);
+      --radius: 12px;
+      --sidebar-w: 220px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 0% 0%, var(--accent-dim), transparent 45%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(77, 199, 255, 0.1), transparent);
+    }
+    .um-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .um-login.um-card {
+      width: 100%;
+      max-width: 22rem;
+      background: linear-gradient(155deg, rgba(18, 20, 28, 0.96), rgba(10, 12, 18, 0.92));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.35rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+    .um-login h1 { font-size: 1.2rem; font-weight: 600; }
+    .um-tagline { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.5; }
+    .um-field, .um-textarea {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+    .um-login .um-field { margin-top: 1rem; }
+    .um-login .err { color: #ff8a8a; font-size: 0.78rem; margin-top: 0.35rem; min-height: 1.2em; }
+    .um-btn {
+      width: 100%;
+      margin-top: 0.65rem;
+      padding: 0.65rem;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), #5a8cff);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .um-btn:hover { filter: brightness(1.05); }
+    .um-btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      width: auto;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+      margin-top: 0;
+    }
+    /* App shell — Obsidian-like */
+    .um-shell {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      min-height: min(92vh, 900px);
+      margin: 0 auto;
+      background: linear-gradient(160deg, rgba(16, 18, 26, 0.97), rgba(8, 10, 16, 0.95));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+    .um-sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 0.85rem 0.65rem;
+    }
+    .um-brand {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 0.5rem 0.65rem;
+    }
+    .um-nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.45rem 0.6rem;
+      margin-bottom: 2px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.84rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .um-nav-btn:hover { background: var(--surface); color: var(--text); }
+    .um-nav-btn.is-on { background: var(--surface2); color: var(--text); font-weight: 600; }
+    .um-nav-hint {
+      font-size: 0.65rem;
+      color: var(--muted);
+      padding: 0.75rem 0.5rem 0;
+      line-height: 1.4;
+      margin-top: auto;
+    }
+    .um-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 1rem 1.1rem 0.75rem;
+    }
+    .um-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .um-toolbar .um-actions { display: flex; gap: 0.35rem; }
+    .um-toolbar .um-actions button {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .um-toolbar .um-actions button:hover { color: var(--text); }
+    .um-content { flex: 1; min-height: 0; overflow-y: auto; }
+    .um-logout {
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      text-decoration: underline;
+      align-self: flex-start;
+    }
+    /* Today (tracker) */
+    .um-tabs-inline { display: none; }
+    .um-streak { font-size: 0.88rem; margin-bottom: 0.5rem; }
+    .um-fast {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem;
+      background: var(--surface);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .um-fast .time { font-size: 1.2rem; }
+    .um-fast button { font-size: 0.7rem; margin-top: 0.25rem; background: none; border: none; color: var(--accent); cursor: pointer; text-decoration: underline; }
+    .um-task { display: flex; align-items: center; gap: 0.55rem; padding: 0.32rem 0; }
+    .um-task input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; }
+    .um-task span.done { text-decoration: line-through; opacity: 0.5; }
+    .um-progress { margin-top: 0.85rem; height: 5px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
+    .um-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #4dc7ff); transition: width 0.35s ease; }
+    .um-pct { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+    .um-suggest { font-size: 0.72rem; color: var(--muted); margin-top: 0.65rem; line-height: 1.45; }
+    .um-block { margin-top: 0.65rem; }
+    .um-textarea { margin-top: 0.65rem; min-height: 3.5rem; resize: vertical; font-size: 0.85rem; }
+    /* Vault */
+    .um-vault { display: grid; grid-template-columns: minmax(160px, 220px) 1fr; gap: 1rem; min-height: 420px; }
+    @media (max-width: 720px) {
+      .um-vault { grid-template-columns: 1fr; }
+    }
+    .um-vault-list {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 55vh;
+    }
+    .um-vault-search { padding: 0.5rem; border-bottom: 1px solid var(--border); }
+    .um-vault-search input { width: 100%; padding: 0.45rem 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.25); color: var(--text); font-size: 0.8rem; }
+    .um-vault-items { overflow-y: auto; flex: 1; }
+    .um-vault-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.65rem;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .um-vault-item:hover { background: rgba(255,255,255,0.04); }
+    .um-vault-item.is-on { background: rgba(124, 92, 255, 0.15); }
+    .um-vault-item .t { font-weight: 500; }
+    .um-vault-item .meta { font-size: 0.65rem; color: var(--muted); margin-top: 0.15rem; }
+    .um-vault-new { padding: 0.5rem; border-top: 1px solid var(--border); }
+    .um-vault-editor {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,0.2);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 360px;
+    }
+    .um-vault-editor .title-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .um-vault-editor input.title-in {
+      flex: 1;
+      min-width: 140px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      border-bottom: 1px solid transparent;
+      padding: 0.2rem 0;
+    }
+    .um-vault-editor input.title-in:focus { outline: none; border-bottom-color: var(--accent); }
+    .um-vault-editor .tags-in { width: 100%; font-size: 0.78rem; color: var(--muted); }
+    .um-vault-body {
+      flex: 1;
+      min-height: 200px;
+      width: 100%;
+      padding: 0.65rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.35);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      resize: vertical;
+    }
+    .um-vault-hint { font-size: 0.68rem; color: var(--muted); line-height: 1.45; }
+    .um-toggle-row { display: flex; gap: 0.35rem; margin-top: 0.25rem; }
+    .um-seg { display: inline-flex; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .um-seg button {
+      padding: 0.3rem 0.55rem;
+      font-size: 0.72rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .um-seg button.is-on { background: var(--surface2); color: var(--text); }
+    /* Notion-like table */
+    .um-table-wrap { overflow-x: auto; margin-top: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); }
+    .um-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .um-table th, .um-table td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border); }
+    .um-table th { color: var(--muted); font-weight: 600; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .um-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .um-table button.link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: inherit; text-decoration: underline; }
+    .um-backlinks { margin-top: 0.75rem; padding-top: 0.65rem; border-top: 1px solid var(--border); }
+    .um-backlinks h4 { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.35rem; }
+    .um-backlinks ul { list-style: none; font-size: 0.78rem; }
+    .um-backlinks li { margin-bottom: 0.25rem; }
+    .um-backlinks button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: inherit; }
+    .um-preview {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .um-preview .wikilink { color: var(--accent); cursor: pointer; text-decoration: underline; }
+    .um-preview .tag { color: #6ee7c5; }
+    /* Log / Review */
+    .um-log { max-height: 22rem; overflow: auto; display: flex; flex-direction: column; gap: 0.45rem; }
+    .um-log-item { padding: 0.6rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .um-log-item .d { font-size: 0.65rem; color: var(--muted); }
+    .um-log-item .p { font-size: 0.85rem; margin-top: 0.2rem; }
+    .um-review p { font-size: 0.88rem; }
+    .um-review .sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.45rem; }
+    .um-graph { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .um-graph strong { color: var(--text); }
+    .um-asst-hero {
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.14), rgba(77, 199, 255, 0.08));
+      margin-bottom: 0.85rem;
+    }
+    .um-asst-hero .label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    .um-asst-hero .next { font-size: 1.05rem; font-weight: 600; line-height: 1.35; color: var(--text); }
+    .um-asst-hero .when { font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; }
+    .um-asst-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.4; }
+    .um-todo-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+    .um-todo-row:last-child { border-bottom: none; }
+    .um-todo-row input[type="checkbox"] { width: 1.05rem; height: 1.05rem; accent-color: var(--accent); }
+    .um-todo-row span { flex: 1; font-size: 0.88rem; }
+    .um-todo-row span.done { text-decoration: line-through; opacity: 0.45; }
+    .um-todo-del { font-size: 0.7rem; color: var(--muted); background: none; border: none; cursor: pointer; text-decoration: underline; }
+    .um-cal-row { padding: 0.45rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+    .um-cal-row:last-child { border-bottom: none; }
+    .um-cal-row .t { font-weight: 500; }
+    .um-cal-row .w { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+    /* Mobile sidebar */
+    .um-burger { display: none; }
+    @media (max-width: 640px) {
+      .um-wrap { padding: 0; align-items: stretch; }
+      .um-shell { border-radius: 0; min-height: 100vh; max-width: none; flex-direction: column; }
+      .um-burger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .um-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 0.65rem;
+        transition: max-height 0.25s ease;
+      }
+      .um-sidebar.is-open { max-height: 320px; padding: 0.65rem; overflow-y: auto; }
+      .um-toolbar { margin-bottom: 0.5rem; }
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="um-wrap">
+    <div class="um-card um-login" id="um-login">
+      <h1>Your vault</h1>
+      <p class="um-tagline">Obsidian-style notes + Notion-style lists, wired to your daily system. One login. Everything stays in this browser.</p>
+      <input type="password" class="um-field" id="um-pass" placeholder="Passphrase" autocomplete="current-password" aria-label="Passphrase">
+      <div class="err" id="um-login-err" aria-live="polite"></div>
+      <button type="button" class="um-btn" id="um-unlock">Unlock</button>
+    </div>
+
+    <div id="um-app" hidden style="width:100%;max-width:1100px;">
+      <div class="um-shell">
+        <aside class="um-sidebar" id="um-sidebar" aria-label="Workspace">
+          <div class="um-brand">Workspace</div>
+          <nav id="um-nav"></nav>
+          <p class="um-nav-hint">Assistant: next up + todos + calendar · Vault: [[links]] · #tags · table</p>
+        </aside>
+        <main class="um-main">
+          <div class="um-toolbar">
+            <button type="button" class="um-burger" id="um-burger" aria-label="Menu">☰</button>
+            <div class="um-actions">
+              <button type="button" id="um-focus-toggle">Focus</button>
+              <button type="button" id="um-fast-toggle">Fast</button>
+            </div>
+          </div>
+          <div class="um-content" id="um-content"></div>
+          <button type="button" class="um-logout" id="um-logout">Log out</button>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  const STORAGE_KEY = 'upgrade-v3';
+  const SESSION_KEY = 'upgrade-unlocked';
+  const EXPECTED_SHA256 = '20f65c28671b40937c5bf23acc7c6f37e5a5ec0622e347b57685725df5ba9e50';
+  /** If you open this file as file://, SHA-256 isn’t available — same passphrase is checked here. On HTTPS, only the hash above is used. */
+  const PLAINTEXT_FALLBACK = 'check';
+
+  const defaultTasks = [
+    '1 hour deep learning',
+    '20 min writing',
+    'Solve 1 problem',
+    '20 min taste building',
+    'Move body',
+    'Reduce scrolling',
+    '5–10 min awareness'
+  ];
+
+  const navItems = ['Today', 'Assistant', 'Vault', 'Daily', 'Goals', 'Log', 'Review', 'Graph'];
+
+  function todayKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+
+  function genId() {
+    return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  async function sha256Hex(str) {
+    if (!crypto.subtle) throw new Error('no subtle');
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  function canVerifyWithHash() {
+    return typeof crypto !== 'undefined' && !!crypto.subtle;
+  }
+
+  /** Hash check on HTTPS/localhost; plain compare on file:// (Web Crypto blocked there). */
+  async function verifyPassphrase(pw) {
+    if (canVerifyWithHash()) {
+      try {
+        var hex = await sha256Hex(pw);
+        return hex === EXPECTED_SHA256.toLowerCase();
+      } catch (e) {
+        console.warn('ums login:', e);
+      }
+    }
+    return pw === PLAINTEXT_FALLBACK;
+  }
+
+  function defaultVault() {
+    var id = genId();
+    return {
+      pages: [{
+        id: id,
+        title: 'Welcome',
+        body: 'This is your vault — like Obsidian in the browser.\n\n- Link notes: [[Welcome]]\n- Tags: #idea #system\n\nUse **Vault** for pages, **Daily** for today\'s longform note.',
+        tags: ['system'],
+        updatedAt: Date.now()
+      }],
+      activeId: id,
+      listMode: 'list',
+      vaultQuery: ''
+    };
+  }
+
+  const state = {
+    nav: 'Today',
+    tasks: defaultTasks.slice(),
+    checked: defaultTasks.map(function () { return false; }),
+    note: '',
+    dailyNotes: {},
+    problemLog: { problem: '', cause: '', solution: '', result: '' },
+    streak: 0,
+    history: [],
+    goals: ['Become sharp thinker', 'Build taste', 'Earn from skills'],
+    music: { song: '', feeling: '' },
+    focusMode: false,
+    fastMode: false,
+    timer: 60,
+    vault: defaultVault(),
+    goingThrough: '',
+    todos: [],
+    calendarEvents: [],
+    _calendarError: '',
+    _calendarLoading: false,
+    _calendarFetchedOnce: false
+  };
+
+  let timerId = null;
+
+  const el = {
+    login: document.getElementById('um-login'),
+    app: document.getElementById('um-app'),
+    pass: document.getElementById('um-pass'),
+    loginErr: document.getElementById('um-login-err'),
+    unlock: document.getElementById('um-unlock'),
+    logout: document.getElementById('um-logout'),
+    nav: document.getElementById('um-nav'),
+    content: document.getElementById('um-content'),
+    focusToggle: document.getElementById('um-focus-toggle'),
+    fastToggle: document.getElementById('um-fast-toggle'),
+    sidebar: document.getElementById('um-sidebar'),
+    burger: document.getElementById('um-burger')
+  };
+
+  function load() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      if (saved.date === todayKey()) {
+        if (Array.isArray(saved.checked) && saved.checked.length === state.tasks.length) {
+          state.checked = saved.checked;
+        }
+        state.note = saved.note || '';
+        state.problemLog = saved.problemLog && typeof saved.problemLog === 'object'
+          ? Object.assign({}, state.problemLog, saved.problemLog)
+          : state.problemLog;
+        state.music = saved.music && typeof saved.music === 'object'
+          ? Object.assign({}, state.music, saved.music)
+          : state.music;
+      }
+      state.streak = typeof saved.streak === 'number' ? saved.streak : 0;
+      state.history = Array.isArray(saved.history) ? saved.history : [];
+      state.goals = Array.isArray(saved.goals) && saved.goals.length ? saved.goals.slice() : state.goals.slice();
+      if (saved.dailyNotes && typeof saved.dailyNotes === 'object') {
+        state.dailyNotes = saved.dailyNotes;
+      } else if (typeof saved.dailyNote === 'string' && saved.dailyNote) {
+        state.dailyNotes[todayKey()] = saved.dailyNote;
+      }
+      state.goingThrough = typeof saved.goingThrough === 'string' ? saved.goingThrough : '';
+      if (Array.isArray(saved.todos)) {
+        state.todos = saved.todos
+          .filter(function (t) { return t && typeof t.text === 'string'; })
+          .map(function (t) {
+            return { id: t.id || genId(), text: t.text, done: !!t.done };
+          });
+      }
+      if (saved.vault && Array.isArray(saved.vault.pages) && saved.vault.pages.length) {
+        state.vault = {
+          pages: saved.vault.pages.map(function (p) {
+            return {
+              id: p.id || genId(),
+              title: p.title || 'Untitled',
+              body: p.body || '',
+              tags: Array.isArray(p.tags) ? p.tags : [],
+              updatedAt: typeof p.updatedAt === 'number' ? p.updatedAt : Date.now()
+            };
+          }),
+          activeId: saved.vault.activeId || saved.vault.pages[0].id,
+          listMode: saved.vault.listMode === 'table' ? 'table' : 'list',
+          vaultQuery: saved.vault.vaultQuery || ''
+        };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        checked: state.checked,
+        note: state.note,
+        dailyNotes: state.dailyNotes,
+        problemLog: state.problemLog,
+        streak: state.streak,
+        history: state.history,
+        goals: state.goals,
+        music: state.music,
+        vault: state.vault,
+        goingThrough: state.goingThrough,
+        todos: state.todos,
+        date: todayKey()
+      }));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function getPage(id) {
+    return state.vault.pages.find(function (p) { return p.id === id; });
+  }
+
+  function findPageByTitle(title) {
+    var t = title.trim();
+    return state.vault.pages.find(function (p) { return p.title === t; });
+  }
+
+  function progress() {
+    var n = state.checked.filter(Boolean).length;
+    return Math.round((n / state.tasks.length) * 100);
+  }
+
+  function suggestion() {
+    if (state.history.length < 3) return 'Start building consistency';
+    var skipCount = state.checked.filter(function (c) { return !c; }).length;
+    if (skipCount > 3) return "You're skipping too much → reduce tasks";
+    if (!state.problemLog.problem) return "You didn't log a problem → think deeper";
+    return 'Good execution → keep going';
+  }
+
+  function maybeCompleteDay() {
+    var p = progress();
+    if (p !== 100) return;
+    var exists = state.history.some(function (h) { return h.date === todayKey(); });
+    if (exists) return;
+    state.history.unshift({
+      date: todayKey(),
+      note: state.note,
+      problemLog: Object.assign({}, state.problemLog),
+      music: Object.assign({}, state.music)
+    });
+    state.streak += 1;
+    save();
+  }
+
+  function wikiRegex() {
+    return /\[\[([^\]]+)\]\]/g;
+  }
+
+  function extractWikiTargets(body) {
+    var out = [];
+    var re = wikiRegex();
+    var m;
+    while ((m = re.exec(body)) !== null) {
+      var raw = m[1].split('|')[0].trim();
+      if (raw) out.push(raw);
+    }
+    return out;
+  }
+
+  function backlinksForTitle(title) {
+    return state.vault.pages.filter(function (p) {
+      if (p.title === title) return false;
+      return extractWikiTargets(p.body).indexOf(title) !== -1;
+    });
+  }
+
+  function countLinks() {
+    var n = 0;
+    state.vault.pages.forEach(function (p) {
+      n += extractWikiTargets(p.body).length;
+    });
+    return n;
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderBodyPreview(text) {
+    var esc = escapeHtml(text);
+    esc = esc.replace(wikiRegex(), function (_, inner) {
+      var target = inner.split('|')[0].trim();
+      var label = inner.indexOf('|') !== -1 ? inner.split('|')[1].trim() : target;
+      return '<span class="wikilink" data-target="' + escapeHtml(target) + '">' + escapeHtml(label) + '</span>';
+    });
+    esc = esc.replace(/(^|\s)(#[\w\u00C0-\u024F-]+)/g, function (_, sp, tag) {
+      return sp + '<span class="tag">' + escapeHtml(tag) + '</span>';
+    });
+    return esc;
+  }
+
+  function renderNav() {
+    el.nav.innerHTML = '';
+    navItems.forEach(function (name) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'um-nav-btn' + (state.nav === name ? ' is-on' : '');
+      b.textContent = name;
+      b.addEventListener('click', function () {
+        state.nav = name;
+        if (el.sidebar) el.sidebar.classList.remove('is-open');
+        renderNav();
+        renderContent();
+      });
+      el.nav.appendChild(b);
+    });
+  }
+
+  function field(key, placeholder, value, ns) {
+    var id = ns ? 'um-music-' + key : 'um-pl-' + key;
+    return '<input class="um-field" id="' + id + '" data-key="' + key + '" data-ns="' + (ns || 'problem') + '" placeholder="' + escapeHtml(placeholder) + '" value="' + escapeHtml(value) + '">';
+  }
+
+  function bindTodayInputs() {
+    var root = el.content;
+    root.querySelectorAll('.um-task input[type="checkbox"]').forEach(function (inp) {
+      inp.addEventListener('change', function () {
+        var i = parseInt(inp.getAttribute('data-i'), 10);
+        state.checked[i] = inp.checked;
+        save();
+        maybeCompleteDay();
+        renderContent();
+      });
+    });
+    root.querySelectorAll('.um-field[data-ns="problem"]').forEach(function (inp) {
+      inp.addEventListener('input', function () {
+        var k = inp.getAttribute('data-key');
+        state.problemLog[k] = inp.value;
+        save();
+        var s = root.querySelector('.um-suggest');
+        if (s) s.textContent = suggestion();
+      });
+    });
+    root.querySelectorAll('.um-field[data-ns="music"]').forEach(function (inp) {
+      inp.addEventListener('input', function () {
+        var k = inp.getAttribute('data-key');
+        state.music[k] = inp.value;
+        save();
+      });
+    });
+    var noteEl = document.getElementById('um-note');
+    if (noteEl) {
+      noteEl.addEventListener('input', function () {
+        state.note = noteEl.value;
+        save();
+      });
+    }
+    var resetBtn = document.getElementById('um-reset-timer');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        state.timer = 60;
+        renderContent();
+      });
+    }
+  }
+
+  function renderToday() {
+    var p = progress();
+    var html = '<p class="um-streak">Streak: ' + state.streak + ' 🔥</p>';
+    if (state.fastMode) {
+      html += '<div class="um-fast"><p class="time">⏱ ' + state.timer + 's</p><button type="button" id="um-reset-timer">reset</button></div>';
+    }
+    html += '<div class="um-task-list">';
+    state.tasks.forEach(function (task, i) {
+      html += '<label class="um-task"><input type="checkbox" data-i="' + i + '"' + (state.checked[i] ? ' checked' : '') + '><span class="' + (state.checked[i] ? 'done' : '') + '">' + escapeHtml(task) + '</span></label>';
+    });
+    html += '</div>';
+    html += '<div class="um-progress"><div class="um-progress-fill" style="width:' + p + '%"></div></div>';
+    html += '<p class="um-pct">' + p + '%</p>';
+    html += '<p class="um-suggest">' + escapeHtml(suggestion()) + '</p>';
+    if (!state.focusMode) {
+      html += '<div class="um-block">';
+      html += field('problem', 'Problem', state.problemLog.problem);
+      html += field('cause', 'Cause', state.problemLog.cause);
+      html += field('solution', 'Solution', state.problemLog.solution);
+      html += field('result', 'Result', state.problemLog.result);
+      html += '</div>';
+      html += '<textarea class="um-textarea" id="um-note" rows="2" placeholder="Quick capture (today)">' + escapeHtml(state.note) + '</textarea>';
+      html += '<div class="um-block">';
+      html += field('song', 'Song', state.music.song, 'music');
+      html += field('feeling', 'Feeling', state.music.feeling, 'music');
+      html += '</div>';
+    }
+    el.content.innerHTML = html;
+    bindTodayInputs();
+  }
+
+  function renderDaily() {
+    var html = '<p class="um-suggest" style="margin-bottom:0.65rem">Daily note · <strong style="color:var(--text)">' + escapeHtml(todayKey()) + '</strong> — longform, like Obsidian daily.</p>';
+    var dk = todayKey();
+    if (state.dailyNotes[dk] == null) state.dailyNotes[dk] = '';
+    html += '<textarea class="um-vault-body" id="um-daily" style="min-height:320px;font-family:inherit" placeholder="#thoughts\n\nLink out: [[Page title]]">' + escapeHtml(state.dailyNotes[dk]) + '</textarea>';
+    html += '<p class="um-vault-hint">Saved automatically. Open <strong>Vault</strong> for all pages.</p>';
+    el.content.innerHTML = html;
+    var ta = document.getElementById('um-daily');
+    if (ta) {
+      ta.addEventListener('input', function () {
+        state.dailyNotes[todayKey()] = ta.value;
+        save();
+      });
+    }
+  }
+
+  function filteredPages() {
+    var q = (state.vault.vaultQuery || '').trim().toLowerCase();
+    var list = state.vault.pages.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    if (!q) return list;
+    return list.filter(function (p) {
+      return p.title.toLowerCase().indexOf(q) !== -1
+        || p.body.toLowerCase().indexOf(q) !== -1
+        || p.tags.some(function (t) { return t.toLowerCase().indexOf(q) !== -1; });
+    });
+  }
+
+  function openPage(id) {
+    state.vault.activeId = id;
+    save();
+    renderContent();
+  }
+
+  function openOrCreatePage(title) {
+    var p = findPageByTitle(title);
+    if (p) {
+      state.vault.activeId = p.id;
+    } else {
+      var np = { id: genId(), title: title, body: '', tags: [], updatedAt: Date.now() };
+      state.vault.pages.push(np);
+      state.vault.activeId = np.id;
+    }
+    save();
+    state.nav = 'Vault';
+    renderNav();
+    renderContent();
+  }
+
+  function bindVaultEditor() {
+    var titleIn = document.getElementById('um-page-title');
+    var tagsIn = document.getElementById('um-page-tags');
+    var bodyIn = document.getElementById('um-page-body');
+    var delBtn = document.getElementById('um-page-delete');
+    var page = getPage(state.vault.activeId);
+    if (!page) return;
+
+    function touch() {
+      page.updatedAt = Date.now();
+      save();
+    }
+
+    if (titleIn) {
+      titleIn.addEventListener('input', function () {
+        page.title = titleIn.value;
+        touch();
+        renderNav();
+      });
+    }
+    if (tagsIn) {
+      tagsIn.addEventListener('input', function () {
+        page.tags = tagsIn.value.split(/[,\s]+/).map(function (t) { return t.replace(/^#/, '').trim(); }).filter(Boolean);
+        touch();
+      });
+    }
+    if (bodyIn) {
+      bodyIn.addEventListener('input', function () {
+        page.body = bodyIn.value;
+        touch();
+      });
+    }
+    if (delBtn) {
+      delBtn.addEventListener('click', function () {
+        if (state.vault.pages.length <= 1) return;
+        if (!confirm('Delete this page?')) return;
+        state.vault.pages = state.vault.pages.filter(function (p) { return p.id !== page.id; });
+        state.vault.activeId = state.vault.pages[0].id;
+        save();
+        renderContent();
+      });
+    }
+
+    var modeEdit = document.getElementById('um-mode-edit');
+    var modePrev = document.getElementById('um-mode-preview');
+    var prevEl = document.getElementById('um-body-preview');
+    if (modeEdit && modePrev && prevEl && bodyIn) {
+      function attachPreviewLinks() {
+        prevEl.querySelectorAll('.wikilink').forEach(function (span) {
+          span.addEventListener('click', function () {
+            openOrCreatePage(span.getAttribute('data-target') || '');
+          });
+        });
+      }
+      function setMode(m) {
+        state._vaultViewMode = m;
+        modeEdit.classList.toggle('is-on', m === 'edit');
+        modePrev.classList.toggle('is-on', m === 'preview');
+        bodyIn.hidden = m === 'preview';
+        prevEl.hidden = m !== 'preview';
+        if (m === 'preview') {
+          prevEl.innerHTML = renderBodyPreview(bodyIn.value);
+          attachPreviewLinks();
+        }
+      }
+      state._vaultViewMode = state._vaultViewMode || 'edit';
+      setMode(state._vaultViewMode);
+      modeEdit.addEventListener('click', function () { setMode('edit'); });
+      modePrev.addEventListener('click', function () { setMode('preview'); });
+    }
+
+    var bl = document.getElementById('um-backlinks');
+    if (bl) {
+      bl.querySelectorAll('button[data-open]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          openPage(btn.getAttribute('data-open'));
+        });
+      });
+    }
+  }
+
+  function renderVault() {
+    var pages = filteredPages();
+    var active = getPage(state.vault.activeId) || state.vault.pages[0];
+    if (!active) {
+      state.vault = defaultVault();
+      active = state.vault.pages[0];
+      state.vault.activeId = active.id;
+    }
+
+    var html = '<div class="um-vault">';
+    html += '<div class="um-vault-list">';
+    html += '<div class="um-vault-search"><input type="search" id="um-vault-q" placeholder="Search vault…" value="' + escapeHtml(state.vault.vaultQuery) + '"></div>';
+    html += '<div class="um-vault-items" id="um-vault-items"></div>';
+    html += '<div class="um-vault-new"><button type="button" class="um-btn um-btn-ghost" id="um-new-page" style="width:100%">+ New page</button></div>';
+    html += '</div>';
+
+    html += '<div class="um-vault-editor">';
+    html += '<div class="title-row">';
+    html += '<input class="title-in" id="um-page-title" value="' + escapeHtml(active.title) + '" placeholder="Untitled">';
+    html += '<div class="um-seg"><button type="button" id="um-mode-edit" class="is-on">Edit</button><button type="button" id="um-mode-preview">Preview</button></div>';
+    html += '<button type="button" class="um-btn um-btn-ghost" id="um-page-delete">Delete</button>';
+    html += '</div>';
+    html += '<input class="um-field tags-in" id="um-page-tags" placeholder="#tags (comma or space)" value="' + escapeHtml(active.tags.map(function (t) { return '#' + t; }).join(' ')) + '">';
+    html += '<textarea class="um-vault-body" id="um-page-body" placeholder="Write… Use [[Page title]] to link">' + escapeHtml(active.body) + '</textarea>';
+    html += '<div class="um-preview" id="um-body-preview" hidden></div>';
+    html += '<p class="um-vault-hint">Notion-style: switch to <strong>table</strong> in the list header on wide screens — use the toggle below.</p>';
+
+    var backs = backlinksForTitle(active.title);
+    html += '<div class="um-backlinks" id="um-backlinks"><h4>Linked mentions</h4>';
+    if (!backs.length) {
+      html += '<p class="um-vault-hint">No backlinks yet.</p>';
+    } else {
+      html += '<ul>';
+      backs.forEach(function (p) {
+        html += '<li><button type="button" data-open="' + escapeHtml(p.id) + '">' + escapeHtml(p.title) + '</button></li>';
+      });
+      html += '</ul>';
+    }
+    html += '</div>';
+    html += '</div></div>';
+
+    html += '<div class="um-toggle-row"><span class="um-vault-hint" style="margin-right:0.5rem">List view</span><div class="um-seg">';
+    html += '<button type="button" id="um-vault-list" class="' + (state.vault.listMode === 'list' ? 'is-on' : '') + '">List</button>';
+    html += '<button type="button" id="um-vault-table" class="' + (state.vault.listMode === 'table' ? 'is-on' : '') + '">Table</button>';
+    html += '</div></div>';
+
+    if (state.vault.listMode === 'table') {
+      html += '<div class="um-table-wrap"><table class="um-table"><thead><tr><th>Title</th><th>Tags</th><th>Updated</th></tr></thead><tbody>';
+      state.vault.pages.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; }).forEach(function (p) {
+        var tags = p.tags.join(', ');
+        var d = new Date(p.updatedAt).toLocaleDateString();
+        html += '<tr><td><button type="button" class="link" data-open="' + escapeHtml(p.id) + '">' + escapeHtml(p.title) + '</button></td><td>' + escapeHtml(tags) + '</td><td>' + escapeHtml(d) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+
+    el.content.innerHTML = html;
+
+    var qIn = document.getElementById('um-vault-q');
+    if (qIn) {
+      qIn.addEventListener('input', function () {
+        state.vault.vaultQuery = qIn.value;
+        save();
+        renderVault();
+      });
+    }
+
+    var items = document.getElementById('um-vault-items');
+    if (items) {
+      pages.forEach(function (p) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'um-vault-item' + (p.id === state.vault.activeId ? ' is-on' : '');
+        b.innerHTML = '<span class="t">' + escapeHtml(p.title) + '</span><div class="meta">' + escapeHtml(p.tags.slice(0, 3).map(function (t) { return '#' + t; }).join(' ') || '—') + '</div>';
+        b.addEventListener('click', function () { openPage(p.id); });
+        items.appendChild(b);
+      });
+    }
+
+    document.getElementById('um-new-page').addEventListener('click', function () {
+      var np = { id: genId(), title: 'Untitled', body: '', tags: [], updatedAt: Date.now() };
+      state.vault.pages.push(np);
+      state.vault.activeId = np.id;
+      save();
+      renderContent();
+    });
+
+    document.getElementById('um-vault-list').addEventListener('click', function () {
+      state.vault.listMode = 'list';
+      save();
+      renderContent();
+    });
+    document.getElementById('um-vault-table').addEventListener('click', function () {
+      state.vault.listMode = 'table';
+      save();
+      renderContent();
+    });
+
+    el.content.querySelectorAll('.um-table .link').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openPage(btn.getAttribute('data-open'));
+      });
+    });
+
+    bindVaultEditor();
+  }
+
+  function renderLog() {
+    if (!state.history.length) {
+      el.content.innerHTML = '<p class="um-suggest">No completed days yet. Finish 100% on <strong>Today</strong> to log.</p>';
+      return;
+    }
+    var html = '<div class="um-log">';
+    state.history.forEach(function (h) {
+      html += '<div class="um-log-item"><p class="d">' + escapeHtml(String(h.date)) + '</p><p class="p">' + escapeHtml((h.problemLog && h.problemLog.problem) || '—') + '</p></div>';
+    });
+    html += '</div>';
+    el.content.innerHTML = html;
+  }
+
+  function renderReview() {
+    var last7 = state.history.slice(0, 7).length;
+    el.content.innerHTML = '<div class="um-review"><p>Last 7 perfect days: ' + last7 + '</p><p class="sub">Patterns decide your future.</p></div>';
+  }
+
+  function renderGoals() {
+    var html = '';
+    state.goals.forEach(function (g, i) {
+      html += '<input class="um-field um-goal" data-gi="' + i + '" value="' + escapeHtml(g) + '">';
+    });
+    html += '<button type="button" class="um-btn um-btn-ghost" id="um-add-goal" style="margin-top:0.5rem">+ Add goal</button>';
+    el.content.innerHTML = html;
+    el.content.querySelectorAll('.um-goal').forEach(function (inp) {
+      inp.addEventListener('input', function () {
+        var i = parseInt(inp.getAttribute('data-gi'), 10);
+        state.goals[i] = inp.value;
+        save();
+      });
+    });
+    document.getElementById('um-add-goal').addEventListener('click', function () {
+      state.goals.push('New goal');
+      save();
+      renderContent();
+    });
+  }
+
+  function computeSuggestedNext() {
+    var ev = state.calendarEvents && state.calendarEvents[0];
+    if (ev) {
+      return { kind: 'cal', title: ev.title, when: ev.startLabel || '' };
+    }
+    var td = state.todos.find(function (t) { return !t.done; });
+    if (td) {
+      return { kind: 'todo', title: td.text, when: null };
+    }
+    var hi = state.tasks.findIndex(function (_, i) { return !state.checked[i]; });
+    if (hi >= 0) {
+      return { kind: 'habit', title: state.tasks[hi], when: null };
+    }
+    return {
+      kind: 'rest',
+      title: 'Nothing queued — add a todo, check Today, or rest without guilt.',
+      when: null
+    };
+  }
+
+  function refreshCalendar() {
+    state._calendarLoading = true;
+    state._calendarError = '';
+    if (state.nav === 'Assistant') renderContent();
+    fetch('/.netlify/functions/calendar-feed')
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        state._calendarLoading = false;
+        state.calendarEvents = Array.isArray(j.events) ? j.events : [];
+        if (j.configured === false) {
+          state._calendarError = j.message || 'Set GOOGLE_ICAL_URL in Netlify environment variables.';
+        } else if (j.error) {
+          state._calendarError = String(j.error) + (j.detail ? ' ' + String(j.detail) : '');
+        } else {
+          state._calendarError = '';
+        }
+        if (state.nav === 'Assistant') renderContent();
+      })
+      .catch(function () {
+        state._calendarLoading = false;
+        state.calendarEvents = [];
+        state._calendarError =
+          'Calendar API not available here. Deploy this site on Netlify and set GOOGLE_ICAL_URL (secret iCal link).';
+        if (state.nav === 'Assistant') renderContent();
+      });
+  }
+
+  function renderAssistant() {
+    var sug = computeSuggestedNext();
+    var html = '<div class="um-asst-hero">';
+    html += '<div class="label">Suggested next</div>';
+    if (sug.kind === 'cal') {
+      html += '<div class="next">' + escapeHtml(sug.title) + '</div>';
+      html += '<div class="when">' + escapeHtml(sug.when || '') + '</div>';
+      html += '<p class="um-asst-sub">From your synced calendar.</p>';
+    } else if (sug.kind === 'todo') {
+      html += '<div class="next">' + escapeHtml(sug.title) + '</div>';
+      html += '<p class="um-asst-sub">From your assistant todos.</p>';
+    } else if (sug.kind === 'habit') {
+      html += '<div class="next">Daily habit: ' + escapeHtml(sug.title) + '</div>';
+      html += '<p class="um-asst-sub">From your Today checklist.</p>';
+    } else {
+      html += '<div class="next">' + escapeHtml(sug.title) + '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="um-card"><h2 style="font-size:0.82rem;color:var(--muted);margin-bottom:0.45rem">What I\'m going through</h2>';
+    html += '<p class="um-asst-sub" style="margin-top:0">Context for future you — energy, stress, wins.</p>';
+    html += '<textarea class="um-textarea" id="um-going-through" rows="4" placeholder="e.g. Sleepy but motivated · deadline Thu · avoid doomscrolling">' + escapeHtml(state.goingThrough) + '</textarea></div>';
+
+    html += '<div class="um-card"><h2 style="font-size:0.82rem;color:var(--muted);margin-bottom:0.45rem">Assistant todos</h2>';
+    html += '<p class="um-asst-sub" style="margin-top:0">One-off actions (separate from daily habits on Today).</p>';
+    html += '<div style="display:flex;gap:0.35rem;margin-bottom:0.5rem;flex-wrap:wrap">';
+    html += '<input class="um-field" id="um-todo-new" placeholder="What should I do next?" style="margin:0;flex:1;min-width:140px">';
+    html += '<button type="button" class="um-btn um-btn-ghost" id="um-todo-add">Add</button></div>';
+    state.todos.forEach(function (t) {
+      html += '<div class="um-todo-row" data-id="' + escapeHtml(t.id) + '">';
+      html += '<input type="checkbox" data-todo-id="' + escapeHtml(t.id) + '"' + (t.done ? ' checked' : '') + '>';
+      html += '<span class="' + (t.done ? 'done' : '') + '">' + escapeHtml(t.text) + '</span>';
+      html += '<button type="button" class="um-todo-del" data-todo-del="' + escapeHtml(t.id) + '">Remove</button></div>';
+    });
+    if (!state.todos.length) {
+      html += '<p class="um-suggest" style="margin:0">No todos yet — add what a good assistant would remind you of.</p>';
+    }
+    html += '</div>';
+
+    html += '<div class="um-card"><h2 style="font-size:0.82rem;color:var(--muted);margin-bottom:0.45rem">Calendar</h2>';
+    if (state._calendarLoading) {
+      html += '<p class="um-suggest">Loading calendar…</p>';
+    } else if (state._calendarError) {
+      html += '<p class="um-suggest">' + escapeHtml(state._calendarError) + '</p>';
+    }
+    html += '<button type="button" class="um-btn um-btn-ghost" id="um-cal-refresh" style="margin-bottom:0.5rem">Refresh calendar</button>';
+    if (state.calendarEvents.length) {
+      state.calendarEvents.forEach(function (e) {
+        html += '<div class="um-cal-row"><div class="t">' + escapeHtml(e.title) + '</div><div class="w">' + escapeHtml(e.startLabel || '') + '</div></div>';
+      });
+    } else if (!state._calendarLoading && !state._calendarError) {
+      html += '<p class="um-suggest" style="margin:0">No upcoming events in this feed (or calendar is empty).</p>';
+    }
+    html +=
+      '<p class="um-asst-sub" style="margin-top:0.65rem">Cloud sync: in Netlify → Site settings → Environment variables, add <code>GOOGLE_ICAL_URL</code> with Google Calendar’s secret iCal address (Integrate calendar). Never commit that URL.</p>';
+    html += '</div>';
+
+    el.content.innerHTML = html;
+
+    var gt = document.getElementById('um-going-through');
+    if (gt) {
+      gt.addEventListener('input', function () {
+        state.goingThrough = gt.value;
+        save();
+      });
+    }
+    var addBtn = document.getElementById('um-todo-add');
+    if (addBtn) {
+      addBtn.addEventListener('click', function () {
+        var inp = document.getElementById('um-todo-new');
+        var tx = (inp && inp.value) || '';
+        tx = tx.trim();
+        if (!tx) return;
+        state.todos.push({ id: genId(), text: tx, done: false });
+        if (inp) inp.value = '';
+        save();
+        renderContent();
+      });
+    }
+    el.content.querySelectorAll('.um-todo-row input[type="checkbox"]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var id = cb.getAttribute('data-todo-id');
+        var t = state.todos.find(function (x) { return x.id === id; });
+        if (t) {
+          t.done = cb.checked;
+          save();
+          renderContent();
+        }
+      });
+    });
+    el.content.querySelectorAll('[data-todo-del]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-todo-del');
+        state.todos = state.todos.filter(function (x) { return x.id !== id; });
+        save();
+        renderContent();
+      });
+    });
+    var calRef = document.getElementById('um-cal-refresh');
+    if (calRef) {
+      calRef.addEventListener('click', function () {
+        refreshCalendar();
+      });
+    }
+
+    if (!state._calendarFetchedOnce) {
+      state._calendarFetchedOnce = true;
+      refreshCalendar();
+    }
+  }
+
+  function renderGraph() {
+    var nPages = state.vault.pages.length;
+    var nLinks = countLinks();
+    var nTags = 0;
+    state.vault.pages.forEach(function (p) { nTags += p.tags.length; });
+    el.content.innerHTML =
+      '<div class="um-graph">' +
+      '<p><strong>' + nPages + '</strong> pages · <strong>' + nLinks + '</strong> wiki links · <strong>' + nTags + '</strong> tag entries</p>' +
+      '<p style="margin-top:0.65rem">This is a lightweight stand-in for Obsidian\'s graph: your real structure lives in [[links]]. Grow the vault and backlinks surface context.</p>' +
+      '</div>';
+  }
+
+  function renderContent() {
+    el.focusToggle.textContent = state.focusMode ? 'Normal' : 'Focus';
+    el.fastToggle.textContent = state.fastMode ? 'Stop' : 'Fast';
+    if (state.nav === 'Today') renderToday();
+    else if (state.nav === 'Assistant') renderAssistant();
+    else if (state.nav === 'Vault') renderVault();
+    else if (state.nav === 'Daily') renderDaily();
+    else if (state.nav === 'Goals') renderGoals();
+    else if (state.nav === 'Log') renderLog();
+    else if (state.nav === 'Review') renderReview();
+    else if (state.nav === 'Graph') renderGraph();
+  }
+
+  function startFastTimer() {
+    stopFastTimer();
+    if (!state.fastMode || state.timer <= 0) return;
+    timerId = setInterval(function () {
+      if (!state.fastMode) { stopFastTimer(); return; }
+      state.timer -= 1;
+      if (state.timer <= 0) { state.timer = 0; stopFastTimer(); }
+      var t = el.content.querySelector('.um-fast .time');
+      if (t) t.textContent = '⏱ ' + state.timer + 's';
+    }, 1000);
+  }
+
+  function stopFastTimer() {
+    if (timerId) { clearInterval(timerId); timerId = null; }
+  }
+
+  el.focusToggle.addEventListener('click', function () {
+    state.focusMode = !state.focusMode;
+    renderContent();
+  });
+
+  el.fastToggle.addEventListener('click', function () {
+    state.fastMode = !state.fastMode;
+    if (state.fastMode) state.timer = 60;
+    else stopFastTimer();
+    renderContent();
+    if (state.fastMode) startFastTimer();
+  });
+
+  if (el.burger && el.sidebar) {
+    el.burger.addEventListener('click', function () {
+      el.sidebar.classList.toggle('is-open');
+    });
+  }
+
+  function showApp() {
+    el.login.hidden = true;
+    el.app.hidden = false;
+    load();
+    renderNav();
+    renderContent();
+  }
+
+  function tryUnlock() {
+    el.loginErr.textContent = '';
+    verifyPassphrase(el.pass.value).then(function (ok) {
+      if (ok) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        el.pass.value = '';
+        showApp();
+      } else {
+        el.loginErr.textContent = 'Wrong passphrase.';
+      }
+    }).catch(function () {
+      el.loginErr.textContent =
+        'Could not verify. Try opening this site over https:// or http://localhost (not a raw file path).';
+    });
+  }
+
+  el.unlock.addEventListener('click', tryUnlock);
+  el.pass.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') tryUnlock();
+  });
+
+  el.logout.addEventListener('click', function () {
+    sessionStorage.removeItem(SESSION_KEY);
+    stopFastTimer();
+    el.app.hidden = true;
+    el.login.hidden = false;
+  });
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    showApp();
+  }
+})();
+  </script>
+</body>
+</html>
